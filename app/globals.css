@@ -48,3 +48,16 @@ body {
 .animate-fade-in {
   animation: fade-in 1.2s ease-out both;
 }
+
+.fade-edges {
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    black 35%,
+    transparent 95%
+  );
+  mask-image: radial-gradient(
+    ellipse at center,
+    black 35%,
+    transparent 95%
+  );
+}

@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Bedtime stories
 
-## Getting Started
+A minimalist, dark-themed AI bedtime-story generator. Type a prompt, get back a four-page illustrated short story you reveal one sentence at a time with the spacebar — narrated aloud as it appears.
 
-First, run the development server:
+## Features
+
+- **Four-page micro-stories** — three pages of narrative, one page of moral.
+- **Comic-style illustrations** — one contextual image per page.
+- **Spacebar reveal** — each press surfaces one sentence, with a soft pop-up animation; once a page is full, the next press scrolls to the next page.
+- **Slow text-to-speech** — every revealed sentence is read aloud via the browser's `speechSynthesis` (`rate = 0.85`).
+- **Auto-save** — stories are saved to `localStorage` keyed by the user's prompt.
+- **Saved stories panel** — burger menu (top-left) lists every saved story; click to reload, ✕ to delete.
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org) (App Router, Turbopack)
+- React 19
+- Tailwind CSS v4
+- [OpenRouter](https://openrouter.ai) for both LLM and image generation
+  - Text: `openai/gpt-4o-mini`
+  - Images: `google/gemini-2.5-flash-image`
+
+## Getting started
 
 ```bash
+npm install
+echo "OPENROUTER_API_KEY=sk-or-v1-..." > .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Name | Purpose |
+| --- | --- |
+| `OPENROUTER_API_KEY` | Required. OpenRouter key used for both text and image generation. |
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+The app is a standard Next.js project and deploys to Vercel without changes. Set `OPENROUTER_API_KEY` in the Vercel project settings before the first deploy. The image route uses `maxDuration = 60`, so a Pro plan is recommended if you expect long image generations.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  api/
+    story/route.js   # POST: prompt -> { title, pages: [{ sentences, imagePrompt, isMoral }] }
+    image/route.js   # POST: imagePrompt -> { imageUrl: data:image/... }
+  globals.css        # tailwind import + pop-up animation + edge-fade mask
+  layout.js          # root layout, Inter font
+  page.js            # the entire UI: input, viewer, burger menu, speech, persistence
+```

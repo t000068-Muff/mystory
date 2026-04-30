@@ -1,21 +1,20 @@
-import { Fredoka } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const fredoka = Fredoka({
-  variable: "--font-fredoka",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata = {
-  title: "My Story - A Fun Place for Kids!",
-  description: "A simple, fun, and friendly website made just for kids.",
+  title: "Bedtime stories",
+  description: "Generate illustrated bedtime stories from a single prompt.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${fredoka.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-fredoka)]">
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-neutral-950 text-neutral-100">
         {children}
       </body>
     </html>

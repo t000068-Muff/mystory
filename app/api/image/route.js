@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const STYLE =
-  "comic book panel, bold ink lines, halftone shading, cinematic dark noir comic, dramatic lighting";
+const BASE_STYLE =
+  "dreamy children's storybook illustration, soft watercolor, whimsical, gentle painterly brushwork, ethereal soft lighting, magical, as if imagined by a child";
 
 export async function POST(req) {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -14,8 +14,11 @@ export async function POST(req) {
   }
 
   let prompt;
+  let themeStyle = "";
   try {
-    ({ prompt } = await req.json());
+    const body = await req.json();
+    prompt = body.prompt;
+    themeStyle = typeof body.themeStyle === "string" ? body.themeStyle : "";
   } catch {
     return Response.json({ error: "Invalid JSON body." }, { status: 400 });
   }
@@ -23,7 +26,9 @@ export async function POST(req) {
     return Response.json({ error: "Prompt is required." }, { status: 400 });
   }
 
-  const fullPrompt = `${prompt}. ${STYLE}`;
+  const fullPrompt = [prompt, BASE_STYLE, themeStyle]
+    .filter(Boolean)
+    .join(". ");
 
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
